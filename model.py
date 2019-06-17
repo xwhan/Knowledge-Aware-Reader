@@ -132,8 +132,8 @@ class KAReader(nn.Module):
 
         # prepare pagerank scores
         ent_seed_info = feed['query_entities'].float() # seed entity will have 1.0 score
-        ent_pagerank = torch.cat([torch.zeros(1).to(torch.device('cuda')), ent_seed_info.view(-1)], dim=0)
-        pagerank = torch.index_select(ent_pagerank, dim=0, index=neighbor_ent_local_index).view(B*max_num_candidates, max_num_neighbors)
+        ent_is_seed = torch.cat([torch.zeros(1).to(torch.device('cuda')), ent_seed_info.view(-1)], dim=0)
+        ent_seed_indicator = torch.index_select(ent_is_seed, dim=0, index=neighbor_ent_local_index).view(B*max_num_candidates, max_num_neighbors)
 
         # v0.0 more find-grained attention
         q_emb_expand = q_emb.unsqueeze(1).expand(B, max_num_candidates, max_q_len, -1).contiguous()
@@ -163,7 +163,7 @@ class KAReader(nn.Module):
         neighbor_ent_emb = torch.index_select(ent_emb_for_lookup, dim=0, index=neighbor_ent_local_index)
         neighbor_ent_emb = neighbor_ent_emb.view(B*max_num_candidates, max_num_neighbors, -1)
         neighbor_vec = torch.cat([neighbor_rel_emb, neighbor_ent_emb], dim =-1).view(B*max_num_candidates, max_num_neighbors, -1) # for propagation
-        neighbor_scores = q_rel_simi * pagerank
+        neighbor_scores = q_rel_simi * ent_seed_indicator
         neighbor_scores = neighbor_scores - (1 - neighbor_mask.view(B*max_num_candidates, max_num_neighbors)) * 1e8
         attn_score = F.softmax(neighbor_scores, dim=1)
         aggregate = self.kg_prop(neighbor_vec) * attn_score.unsqueeze(2)

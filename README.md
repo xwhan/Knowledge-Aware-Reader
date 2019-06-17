@@ -15,30 +15,21 @@ Model Overview:
 
 ### Prepare data
 ```
-mkdir datasets && cd datasets && wget http://nlp.cs.ucsb.edu/data/webqsp.tar.gz && tar -xzvf webqsp.tar.gz
+mkdir datasets && cd datasets && wget http://nlp.cs.ucsb.edu/data/webqsp.tar.gz && tar -xzvf webqsp.tar.gz && cd ..
 ```
 
 ### Full KB setting
-**Training**
 ```
-CUDA_VISIBLE_DEVICES=0 python train.py --model_id KAReader_full_kb --num_layer 1 --max_num_neighbors 50 --label_smooth 0.1 --data_folder datasets/webqsp/full/ 
-```
-**Testing**
-```
-CUDA_VISIBLE_DEVICES=0 python train.py --model_id KAReader_full_kb --num_layer 1 --max_num_neighbors 50 --label_smooth 0.1 --data_folder datasets/webqsp/full/ --mode test
+CUDA_VISIBLE_DEVICES=0 python train.py --model_id KAReader_full_kb --max_num_neighbors 50 --label_smooth 0.1 --data_folder datasets/webqsp/full/ 
 ```
 
-### Incomplete KB setting (50%)
-**Training**
+### Incomplete KB setting
+#### 50% KB
 ```
-CUDA_VISIBLE_DEVICES=0 python train.py --model_id KAReader_kb_05 --num_layer 1 --max_num_neighbors 100 --use_doc --label_smooth 0.1 --data_folder datasets/webqsp/kb_05/
-```
-**Testing**
-```
-CUDA_VISIBLE_DEVICES=0 python train.py --model_id KAReader_kb_05 --num_layer 1 --max_num_neighbors 100 --use_doc --label_smooth 0.1 --data_folder datasets/webqsp/kb_05/ --mode test --eps 0.12
+CUDA_VISIBLE_DEVICES=0 python train.py --model_id KAReader_kb_05 --max_num_neighbors 50 --use_doc --data_folder datasets/webqsp/kb_05/ --eps 0.12
 ```
 
-### Bibtex
+### Citation
 ```
 @article{xiong2019improving,
   title={Improving Question Answering over Incomplete KBs with Knowledge-Aware Reader},

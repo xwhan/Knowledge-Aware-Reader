@@ -8,8 +8,6 @@ import yaml
 from collections import Counter
 
 from torch.autograd import Variable
-from torch.nn.utils.rnn import pack_padded_sequence
-from torch.nn.utils.rnn import pad_packed_sequence
 from tqdm import tqdm
 
 import argparse
@@ -61,7 +59,6 @@ def get_config(config_path=None):
 
         # model options
         parser.add_argument('--use_doc', action='store_true')
-        parser.add_argument('--use_kb', action='store_true')
         parser.add_argument('--use_inverse_relation', action='store_true')
         parser.add_argument('--model_id', default='debug', type=str)
         parser.add_argument('--load_model_file', default=None, type=str)

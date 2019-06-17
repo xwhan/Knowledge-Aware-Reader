@@ -1,7 +1,6 @@
 import torch
 import numpy as np
 import random
-import json
 
 from data_generator import DataLoader
 from model import KAReader
@@ -44,17 +43,14 @@ def get_best_ans(candidate2prob):
     return best_ans
 
 def train(cfg):
-    tf_logger = SummaryWriter('my_logs/' + cfg['model_id'])
+    tf_logger = SummaryWriter('tf_logs/' + cfg['model_id'])
 
     # train and test share the same set of documents
     documents = load_documents(cfg['data_folder'] + cfg['{}_documents'.format(cfg['mode'])])
 
-
-
     # train data
     train_data = DataLoader(cfg, documents)
     valid_data = DataLoader(cfg, documents, mode='dev')
-    test_data = DataLoader(cfg, documents, mode='test')
 
     model = KAReader(cfg)
     model = model.to(torch.device('cuda'))
@@ -97,12 +93,6 @@ def train(cfg):
         print('evaluation best f1:{} current:{}'.format(best_val_f1, val_f1))
         print('evaluation best hits:{} current:{}'.format(best_val_hits, val_hits))
 
-        if epoch % 5 == 0:
-            test_f1, test_hits = test(model, test_data, cfg['eps'])
-            tf_logger.add_scalar('test_hits', test_hits, epoch)
-            tf_logger.add_scalar('test_f1', test_f1, epoch)
-            torch.save(model.state_dict(), 'model/{}/{}_{}.pt'.format(cfg['name'], cfg['model_id'], test_hits))
-
     print('save final model')
     torch.save(model.state_dict(), 'model/{}/{}_final.pt'.format(cfg['name'], cfg['model_id']))
 
@@ -111,6 +101,8 @@ def train(cfg):
     model.load_state_dict(torch.load(model_save_path))
     model.eval()
     
+    print('Testing....')
+    test_data = DataLoader(cfg, documents, mode='test')
     test(model, test_data, cfg['eps'])
 
 def test(model, test_data, eps):
@@ -148,18 +140,11 @@ def test(model, test_data, eps):
             f1s.append(f1)
             hits.append(hit)
     print('evaluation.......')
-    print('how many samples......', len(f1s))
+    print('how many eval samples......', len(f1s))
     print('avg_f1', np.mean(f1s))
     print('avg_hits', np.mean(hits))
 
-    for q, f1, hit in zip(questions, f1s, hits):
-        q_to_metrics[q] = (f1, hit)
-    json.dump(q_to_metrics, open('q_to_metrics_kb_only.json', 'w'))
 
-    q_to_ans = {}
-    for q, best_ans in zip(questions, pred_answers):
-        q_to_ans[q] = best_ans
-    json.dump(q_to_ans, open('q_to_ans_kb_only.json', 'w'))
 
     model.train()
     return np.mean(f1s), np.mean(hits)

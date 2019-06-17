@@ -1,0 +1,6 @@
+*.json
+datasets/webqsp/
+*.tar.gz
+*.pt
+__pycache__/
+tf_logs/*
