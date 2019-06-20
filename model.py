@@ -52,8 +52,6 @@ class KAReader(nn.Module):
         # question and doc encoder
         self.question_encoder = Packed(nn.LSTM(self.word_dim, self.hidden_dim // 2, batch_first=True, bidirectional=True))
 
-        # for shared encoder ablation
-        # self.relation_encoder = Packed(nn.LSTM(self.word_dim, self.hidden_dim // 2, batch_first=True, bidirectional=True))
 
         self.self_att_r = AttnEncoder(self.hidden_dim)
         self.self_att_q = AttnEncoder(self.hidden_dim)
@@ -130,7 +128,6 @@ class KAReader(nn.Module):
         neighbor_ent_local_index = (neighbor_ent_local_index + 1) * neighbor_ent_local_mask
         neighbor_ent_local_index = neighbor_ent_local_index.view(-1)
 
-        # prepare pagerank scores
         ent_seed_info = feed['query_entities'].float() # seed entity will have 1.0 score
         ent_is_seed = torch.cat([torch.zeros(1).to(torch.device('cuda')), ent_seed_info.view(-1)], dim=0)
         ent_seed_indicator = torch.index_select(ent_is_seed, dim=0, index=neighbor_ent_local_index).view(B*max_num_candidates, max_num_neighbors)
@@ -141,7 +138,7 @@ class KAReader(nn.Module):
         q_mask_expand = q_mask.unsqueeze(1).expand(B, max_num_candidates, -1).contiguous()
         q_mask_expand = q_mask_expand.view(B*max_num_candidates, -1)
         q_n_affinity = torch.bmm(q_emb_expand, neighbor_rel_emb.transpose(1, 2)) # (bsize*max_num_candidates, q_len, max_num_neighbors)
-        q_n_affinity_mask_q = q_n_affinity - (1 - q_mask_expand.unsqueeze(2)) * 1e8
+        q_n_affinity_mask_q = q_n_affinity - (1 - q_mask_expand.unsqueeze(2)) * 1e20
         q_n_affinity_mask_n = q_n_affinity - (1 - neighbor_mask.view(B*max_num_candidates, 1, max_num_neighbors))
         normalize_over_q = F.softmax(q_n_affinity_mask_q, dim=1)
         normalize_over_n = F.softmax(q_n_affinity_mask_n, dim=2)
@@ -229,8 +226,8 @@ class KAReader(nn.Module):
         # refine KB ent_emb
         # refined_ent_emb = self.refine_ent(ent_emb, ent_emb_from_doc)
         if self.use_doc:
-            ent_emb = self.attn_match(torch.cat([ent_emb, ent_emb_from_doc, ent_emb_from_span], dim=-1)).relu()
-            # q_node_emb = self.attn_match_q(q_node_emb).tanh()
+            ent_emb = l_relu(self.attn_match(torch.cat([ent_emb, ent_emb_from_doc, ent_emb_from_span], dim=-1)))
+            # q_node_emb = self.attn_match_q(q_node_emb)
 
         ent_scores = (q_node_emb * ent_emb).sum(2)
 

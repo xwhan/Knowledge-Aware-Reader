@@ -96,14 +96,24 @@ def train(cfg):
     print('save final model')
     torch.save(model.state_dict(), 'model/{}/{}_final.pt'.format(cfg['name'], cfg['model_id']))
 
-    print('finished training, testing...')
+    
+    # model_save_path = 'model/{}/{}_best.pt'.format(cfg['name'], cfg['model_id'])
+    # model.load_state_dict(torch.load(model_save_path))
+    
+    
+    print('..........Finished training, start testing.......')
+
+    test_data = DataLoader(cfg, documents, mode='test')
+    model.eval()
+    print('finished training, testing final model...')
+    test(model, test_data, cfg['eps'])
+
+    print('testing best model...')
     model_save_path = 'model/{}/{}_best.pt'.format(cfg['name'], cfg['model_id'])
     model.load_state_dict(torch.load(model_save_path))
     model.eval()
-    
-    print('Testing....')
-    test_data = DataLoader(cfg, documents, mode='test')
     test(model, test_data, cfg['eps'])
+
 
 def test(model, test_data, eps):
 
@@ -111,7 +121,6 @@ def test(model, test_data, eps):
     batcher = test_data.batcher()
     id2entity = test_data.id2entity
     f1s, hits = [], []
-    q_to_metrics = {}
     questions = []
     pred_answers = []
     for feed in batcher:

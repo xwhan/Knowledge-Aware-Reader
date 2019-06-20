@@ -4,7 +4,6 @@ import torch.nn.functional as F
 
 import math
 
-from attention import SimpleEncoder
 
 class Packed(nn.Module):
 
@@ -31,8 +30,6 @@ def gelu(x):
 
 def l_relu(x, n_slope=0.01):
     return F.leaky_relu(x, n_slope)
-    # return  gelu(x)
-    # return F.relu(x)
 
 class ConditionGate(nn.Module):
     """docstring for ConditionGate"""
