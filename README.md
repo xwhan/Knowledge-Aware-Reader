@@ -27,10 +27,10 @@ CUDA_VISIBLE_DEVICES=0 python train.py --model_id KAReader_full_kb --max_num_nei
 Note: The Hits@1 should match or be slightly better than the number reported in the paper. More tuning on threshold should give you better F1 score. 
 #### 30% KB
 ```
-CUDA_VISIBLE_DEVICES=0 python train.py --model_id KAReader_kb_05 --max_num_neighbors 50 --use_doc --data_folder datasets/webqsp/kb_03/ --eps 0.05
+CUDA_VISIBLE_DEVICES=0 python train.py --model_id KAReader_kb_03 --max_num_neighbors 50 --use_doc --data_folder datasets/webqsp/kb_03/ --eps 0.05
 ```
 
-### 10% KB
+#### 10% KB
 ```
 CUDA_VISIBLE_DEVICES=0 python train.py --model_id KAReader_kb_01 --max_num_neighbors 50 --use_doc --data_folder datasets/webqsp/kb_01/ --eps 0.05
 ```
