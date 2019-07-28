@@ -101,18 +101,18 @@ def train(cfg):
     # model.load_state_dict(torch.load(model_save_path))
     
     
-    print('..........Finished training, start testing.......')
+    print('\n..........Finished training, start testing.......')
 
     test_data = DataLoader(cfg, documents, mode='test')
     model.eval()
     print('finished training, testing final model...')
     test(model, test_data, cfg['eps'])
 
-    print('testing best model...')
-    model_save_path = 'model/{}/{}_best.pt'.format(cfg['name'], cfg['model_id'])
-    model.load_state_dict(torch.load(model_save_path))
-    model.eval()
-    test(model, test_data, cfg['eps'])
+#     print('testing best model...')
+#     model_save_path = 'model/{}/{}_best.pt'.format(cfg['name'], cfg['model_id'])
+#     model.load_state_dict(torch.load(model_save_path))
+#     model.eval()
+#     test(model, test_data, cfg['eps'])
 
 
 def test(model, test_data, eps):
@@ -152,8 +152,6 @@ def test(model, test_data, eps):
     print('how many eval samples......', len(f1s))
     print('avg_f1', np.mean(f1s))
     print('avg_hits', np.mean(hits))
-
-
 
     model.train()
     return np.mean(f1s), np.mean(hits)
