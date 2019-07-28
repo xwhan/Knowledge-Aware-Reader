@@ -34,7 +34,10 @@ CUDA_VISIBLE_DEVICES=0 python train.py --model_id KAReader_kb_03 --max_num_neigh
 ```
 CUDA_VISIBLE_DEVICES=0 python train.py --model_id KAReader_kb_01 --max_num_neighbors 50 --use_doc --data_folder datasets/webqsp/kb_01/ --eps 0.05
 ```
-
+#### 50% KB
+```
+CUDA_VISIBLE_DEVICES=0 python train.py --model_id KAReader_kb_05 --num_layer 1 --max_num_neighbors 100 --use_doc --data_folder datasets/webqsp/kb_05/ --eps 0.12 --seed 3 --hidden_drop 0.05
+```
 
 ### Citation
 ```
