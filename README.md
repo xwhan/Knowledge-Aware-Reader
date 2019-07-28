@@ -15,7 +15,7 @@ Model Overview:
 
 ### Prepare data
 ```
-mkdir datasets && cd datasets && wget http://nlp.cs.ucsb.edu/data/webqsp.tar.gz && tar -xzvf webqsp.tar.gz && cd ..
+mkdir datasets && cd datasets && wget https://sites.cs.ucsb.edu/~xwhan/datasets/webqsp.tar.gz && tar -xzvf webqsp.tar.gz && cd ..
 ```
 
 ### Full KB setting
