@@ -41,10 +41,20 @@ CUDA_VISIBLE_DEVICES=0 python train.py --model_id KAReader_kb_05 --num_layer 1 -
 
 ### Citation
 ```
-@article{xiong2019improving,
-  title={Improving Question Answering over Incomplete KBs with Knowledge-Aware Reader},
-  author={Xiong, Wenhan and Yu, Mo and Chang, Shiyu and Guo, Xiaoxiao and Wang, William Yang},
-  journal={arXiv preprint arXiv:1905.07098},
-  year={2019}
+@inproceedings{xiong-etal-2019-improving,
+    title = "Improving Question Answering over Incomplete {KB}s with Knowledge-Aware Reader",
+    author = "Xiong, Wenhan  and
+      Yu, Mo  and
+      Chang, Shiyu  and
+      Guo, Xiaoxiao  and
+      Wang, William Yang",
+    booktitle = "Proceedings of the 57th Annual Meeting of the Association for Computational Linguistics",
+    month = jul,
+    year = "2019",
+    address = "Florence, Italy",
+    publisher = "Association for Computational Linguistics",
+    url = "https://www.aclweb.org/anthology/P19-1417",
+    doi = "10.18653/v1/P19-1417",
+    pages = "4258--4264",
 }
 ```
